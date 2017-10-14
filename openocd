@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ $# -gt 0 ]
+then
+	printf "%s\n" "reset halt" "$*" exit | nc localhost 4444
+else
+	rlwrap=""
+	if which rlwrap >/dev/null
+	then
+		rlwrap="rlwrap"
+	fi
+
+	$rlwrap nc localhost 4444
+fi
