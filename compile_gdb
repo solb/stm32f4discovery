@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ ! -d build_gdb ]
+then
+	cat <<-tac
+		arm-none-eabi C/C++ debugger builder.
+
+		USAGE: $0
+
+		There must be a folder in the current directory named build_gdb/ containing the GDB sources.
+	tac
+	exit 1
+fi
+dir="$1"
+
+set -ve
+
+mkdir build_gdb
+cd build_gdb
+../source_gdb/configure --target=arm-none-eabi --disable-nls --disable-binutils --disable-gas --disable-gprof --disable-ld --disable-sim --enable-tui
+make -j3

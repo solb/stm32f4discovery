@@ -1,0 +1,29 @@
+#!/bin/sh
+
+if [ $# -ne 1 ]
+then
+	cat <<-tac
+		arm-none-eabi C/C++ toolchain builder.
+
+		USAGE: $0 <directory containing source checkouts>
+
+		The directory must contain subdirectories named gcc/, binutils-gdb/, and newlib-cygwin/.
+	tac
+	exit 1
+fi
+dir="$1"
+
+set -ve
+
+mkdir source
+cd source
+ln -s "$dir/gcc/"* .
+ln -s "$dir/binutils-gdb/"* . || true
+ln -s "$dir/newlib-cygwin/"* . || true
+
+cd ..
+
+mkdir build
+cd build
+../source/configure --target=arm-none-eabi --with-mode=thumb --with-float=hard --with-cpu=cortex-m4 --with-fpu=fpv4-sp-d16 --enable-languages=c,c++ --with-newlib --disable-nls --disable-gdb --disable-newlib-supplied-syscalls --enable-newlib-io-long-long --enable-newlib-register-fini --enable-newlib-retargetable-locking
+make -j3
